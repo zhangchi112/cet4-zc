@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>四级词汇 · 随手查</title>
+    <meta name="description" content="大学英语四级词汇离线查询，3553 词，含英式/美式音标与发音。" />
+    <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0c1013" media="(prefers-color-scheme: dark)" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="四级词" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" href="icons/icon-192.png" />
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body>
+    <div class="app" id="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark">四</span>
+          <span class="brand-text">四级词汇</span>
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-btn" id="themeBtn" type="button" aria-label="切换主题">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v1.5M12 19.5V21M4.22 4.22l1.06 1.06M18.72 18.72l1.06 1.06M3 12h1.5M19.5 12H21M4.22 19.78l1.06-1.06M18.72 5.28l1.06-1.06" /><circle cx="12" cy="12" r="4.2" /></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="main" id="main">
+        <!-- 查询 -->
+        <section class="view" id="viewSearch">
+          <div class="searchbar">
+            <svg class="search-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.4" /><path d="M16 16l4.2 4.2" /></svg>
+            <input
+              id="q"
+              type="search"
+              inputmode="search"
+              enterkeyhint="search"
+              placeholder="输入英文单词，或中文意思"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              aria-label="搜索单词"
+            />
+            <button class="clear-btn" id="clearBtn" type="button" aria-label="清空" hidden>×</button>
+          </div>
+
+          <div class="status" id="status"></div>
+          <ul class="list results" id="results"></ul>
+
+          <div class="home" id="home">
+            <button class="random-card" id="randomBtn" type="button">
+              <span class="random-kicker">不知道背什么</span>
+              <span class="random-main">随机来一个词 <span aria-hidden="true">→</span></span>
+            </button>
+            <div class="block" id="recentBlock" hidden>
+              <div class="block-head">
+                <h2>最近查询</h2>
+                <button class="text-btn" id="clearRecent" type="button">清空</button>
+              </div>
+              <div class="chips" id="recentChips"></div>
+            </div>
+            <p class="footnote">
+              <span id="wordCount">3553</span> 个四级词条 · 数据来自
+              <a href="https://gitee.com/staryihui/english-vocabulary" target="_blank" rel="noopener">english-vocabulary</a>
+              · 可离线使用
+            </p>
+          </div>
+        </section>
+
+        <!-- 生词本 -->
+        <section class="view hidden" id="viewFav">
+          <div class="page-head">
+            <h1>生词本</h1>
+            <div class="head-actions">
+              <button class="text-btn" id="exportBtn" type="button">导出</button>
+            </div>
+          </div>
+          <ul class="list" id="favList"></ul>
+          <div class="empty" id="favEmpty">
+            <p class="empty-title">还没有收藏</p>
+            <p class="empty-sub">查词时点右上角的星标，就会存到这里。</p>
+          </div>
+        </section>
+      </main>
+
+      <nav class="tabbar" id="tabbar">
+        <button class="tab is-active" data-tab="search" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.4" /><path d="M16 16l4.2 4.2" /></svg>
+          <span>查询</span>
+        </button>
+        <button class="tab" data-tab="fav" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.6l2.3 4.7 5.2.8-3.8 3.6.9 5.1-4.6-2.4-4.6 2.4.9-5.1L4.5 10l5.2-.8z" /></svg>
+          <span>生词本</span>
+          <i class="tab-dot" id="favDot" hidden></i>
+        </button>
+      </nav>
+
+      <!-- 词条详情 -->
+      <section class="detail hidden" id="detail" aria-hidden="true">
+        <header class="detail-bar">
+          <button class="icon-btn" id="backBtn" type="button" aria-label="返回">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+          </button>
+          <button class="star-btn" id="starBtn" type="button" aria-label="收藏">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.6l2.3 4.7 5.2.8-3.8 3.6.9 5.1-4.6-2.4-4.6 2.4.9-5.1L4.5 10l5.2-.8z" /></svg>
+          </button>
+        </header>
+        <div class="detail-body" id="detailBody"></div>
+      </section>
+
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </div>
+
+    <script type="module" src="assets/app.js"></script>
+  </body>
+</html>
