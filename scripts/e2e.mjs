@@ -158,10 +158,7 @@ async function main() {
 
   // 等词库加载完
   for (let i = 0; i < 40; i++) {
-    const ready = await evaluate(
-      "document.getElementById('wordCount')?.textContent === '3553'",
-      sessionId
-    );
+    const ready = await evaluate("document.documentElement.dataset.ready === '1'", sessionId);
     if (ready) break;
     await sleep(200);
   }

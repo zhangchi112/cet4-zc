@@ -3,7 +3,7 @@
  * 词库是静态文件，所以策略很简单：装好之后全部走缓存，网络只用于更新版本。
  * 改了词库或页面后，把 VERSION 加一，用户下次打开就会拿到新内容。
  */
-const VERSION = "cet4-v2";
+const VERSION = "cet4-v3";
 
 const SHELL = [
   "./",

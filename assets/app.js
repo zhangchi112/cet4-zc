@@ -11,6 +11,7 @@ const LS = {
 
 const state = {
   meta: null,
+  ready: false, // 词库索引是否已就绪
   index: [], // [word, uk, us, short]
   map: new Map(), // lower(word) -> entry
   chunks: new Map(), // letter -> Promise<{word: trans}>
@@ -112,7 +113,10 @@ async function boot() {
     state.meta = data.meta;
     state.index = data.words;
     for (const e of data.words) state.map.set(e[0].toLowerCase(), e);
+    state.ready = true;
+    document.documentElement.dataset.ready = "1";
     $("wordCount").textContent = data.meta.count;
+    setStatus("");
   } catch (err) {
     setStatus("词库加载失败：" + err.message);
     toast("词库加载失败，请检查网络");
@@ -125,8 +129,9 @@ async function boot() {
   if (preset) {
     $("q").value = preset;
     $("clearBtn").hidden = false;
-    runSearch(preset);
   }
+  // 词库就绪前用户可能已经打了字，这里补跑一次
+  if ($("q").value.trim()) runSearch($("q").value);
 
   handleHash();
   window.addEventListener("popstate", handleHash);
@@ -191,6 +196,12 @@ async function runSearch(raw) {
     $("home").classList.remove("hidden");
     setStatus("");
     state.results = [];
+    return;
+  }
+
+  // 词库还没加载完就先别给「没有匹配」的假结果，加载完会自动补跑
+  if (!state.ready) {
+    setStatus("词库加载中…");
     return;
   }
 
