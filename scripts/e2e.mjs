@@ -225,7 +225,31 @@ async function main() {
     await evaluate("document.getElementById('starBtn').classList.contains('on')", sessionId)
   );
 
+  console.log("\n查下一个词（底部快捷键）");
+  await evaluate("document.getElementById('newSearchBtn').click()", sessionId);
+  await sleep(500);
+  check(
+    "快捷键关闭详情",
+    await evaluate("document.getElementById('detail').classList.contains('hidden')", sessionId)
+  );
+  check("搜索框已清空", await evaluate("document.getElementById('q').value === ''", sessionId));
+  check(
+    "焦点回到搜索框（键盘会弹出）",
+    await evaluate("document.activeElement && document.activeElement.id === 'q'", sessionId)
+  );
+  check("地址栏 hash 已清除", await evaluate("location.hash === ''", sessionId));
+  await shot(sessionId, "09-new-search");
+
   console.log("\n返回 + 生词本");
+  // 重新查一个词，验证返回键的行为没被快捷键破坏
+  await evaluate(
+    `(() => { const q = document.getElementById('q'); q.value = 'aban';
+      q.dispatchEvent(new Event('input', { bubbles: true })); })()`,
+    sessionId
+  );
+  await sleep(400);
+  await evaluate("document.querySelector('#results .item').click()", sessionId);
+  await sleep(400);
   await evaluate("history.back()", sessionId);
   await sleep(400);
   check(

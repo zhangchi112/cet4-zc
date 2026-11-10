@@ -405,6 +405,20 @@ function closeDetail() {
   state.detailToken++;
 }
 
+/** 查下一个词：关详情、清空搜索框、直接把键盘唤起来 */
+function startNewSearch() {
+  history.replaceState(null, "", location.pathname + location.search);
+  closeDetail();
+  switchTab("search");
+
+  const q = $("q");
+  q.value = "";
+  $("clearBtn").hidden = true;
+  runSearch("");
+  window.scrollTo({ top: 0 });
+  q.focus({ preventScroll: true });
+}
+
 function handleHash() {
   const raw = decodeURIComponent(location.hash.replace(/^#/, ""));
   if (raw) {
@@ -648,6 +662,7 @@ function bindEvents() {
   $("backBtn").addEventListener("click", () => history.back());
   $("starBtn").addEventListener("click", toggleFav);
   $("exportBtn").addEventListener("click", exportFav);
+  $("newSearchBtn").addEventListener("click", startNewSearch);
 }
 
 function switchTab(name) {
